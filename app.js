@@ -112,6 +112,11 @@ async function searchInRange(
     }
     return duplicated;
 }
+// This comments are for dictionary feature that might be added soon.
+// let dictionary = new Array(50825);
+// for (let i = 0; i < dictionary.length; i++) {
+//     dictionary[i] = [];
+// }
 async function searchDuplicated(
     length,
     target,
@@ -125,6 +130,7 @@ async function searchDuplicated(
 
         if (prvDisks === null) prvDisks = inputComb(prvComb);
         const currentSeed = getEntireSeed(prvDisks);
+        // dictionary[currentSeed].push(prvComb);
 
         if (currentSeed === target) return [prvComb];
         else return [];
@@ -161,7 +167,7 @@ function tick() {
     return new Promise((res) => requestAnimationFrame(res));
 }
 
-/* ---- Below codes for about input and output ---- */
+/* ---- Below codes are for IO ---- */
 
 const DirInput = document.getElementById("dirs");
 const SearchTarget = document.getElementById("searchTarget");
@@ -276,5 +282,27 @@ async function handleSearchBtn() {
     );
     CalcTime.innerText = new Date().getTime() - startTime;
     console.log(results);
+    // This comments are for dictionary feature that might be added soon.
+    // console.log(dictionary);
+    // let dicStr = [];
+    // for (let i = 0; i < dictionary.length; i++) {
+    //     if (dictionary[i].length) {
+    //         if (i === 1340) console.log("HERE", i);
+    //         let tempStr = new Array(Number(MaxLength.value));
+    //         for (
+    //             let j = Number(MinLength.value);
+    //             j <= Number(MaxLength.value);
+    //             j++
+    //         ) {
+    //             tempStr[j] = [];
+    //             for (let k of dictionary[i]) {
+    //                 if (k.length === j) tempStr[j].push(k);
+    //             }
+    //             tempStr[j] = tempStr[j].join(", ");
+    //         }
+    //         dicStr.push(`${i}\t${tempStr.join("\t")}`);
+    //     }
+    // }
+    // console.log(dicStr.join("\n"));
     SearchResult.innerHTML = results.join("<br>");
 }
