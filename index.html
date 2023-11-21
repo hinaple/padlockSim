@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>1500iD Sim</title>
+    </head>
+    <style>
+        body {
+            font-size: 20px;
+        }
+        input {
+            font-size: 20px;
+        }
+        .disks {
+            width: 240px;
+            height: 240px;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-radius: 50%;
+        }
+        .disk {
+            width: 90px;
+            height: 90px;
+            position: absolute;
+        }
+        .disk.upper {
+            top: 0;
+        }
+        .disk.left {
+            left: 0;
+            transform: rotate(-90deg);
+        }
+        .disk.lower {
+            bottom: 0;
+            transform: rotate(180deg);
+        }
+        .disk.right {
+            right: 0;
+            transform: rotate(90deg);
+        }
+        .disk-img {
+            width: 100%;
+            height: 100%;
+            transform: rotate(0deg);
+            transition: transform 0.1s linear;
+        }
+        .visual-zone {
+            margin-bottom: 30px;
+        }
+        #dirs {
+            width: 300px;
+            margin-bottom: 20px;
+        }
+        th,
+        td {
+            margin: 10px;
+        }
+        td input:read-only {
+            width: 70px;
+        }
+        td:first-child {
+            text-align: right;
+        }
+        hr {
+            margin: 40px 0 40px 0;
+        }
+        #searchBtn {
+            font-size: 20px;
+        }
+        .range-input {
+            width: 70px;
+        }
+        .center {
+            text-align: center !important;
+        }
+        .result-zone {
+            padding: 3px 10px 3px 10px;
+            margin: 5px;
+            border: solid #000 1px;
+            width: fit-content;
+        }
+        .result-zone input {
+            width: 300px;
+        }
+    </style>
+    <body>
+        <h2>Master Lock® 1500iD 🔒<br />Combination Lock Simulator</h2>
+        <div class="visual-zone">
+            <div class="disks">
+                <div class="disk upper">
+                    <img
+                        src="diskWithDot.png"
+                        alt="1500iD Disk Image"
+                        class="disk-img"
+                        id="disk-u"
+                    />
+                </div>
+                <div class="disk left">
+                    <img
+                        src="diskWithDot.png"
+                        alt="1500iD Disk Image"
+                        class="disk-img"
+                        id="disk-l"
+                    />
+                </div>
+                <div class="disk lower">
+                    <img
+                        src="diskWithDot.png"
+                        alt="1500iD Disk Image"
+                        class="disk-img"
+                        id="disk-d"
+                    />
+                </div>
+                <div class="disk right">
+                    <img
+                        src="diskWithDot.png"
+                        alt="1500iD Disk Image"
+                        class="disk-img"
+                        id="disk-r"
+                    />
+                </div>
+            </div>
+        </div>
+        <div class="value-zone">
+            <input
+                type="text"
+                id="dirs"
+                placeholder="Input here(ULDR or Arrow keys)"
+            /><br />
+            <table>
+                <th>Disk</th>
+                <th>N</th>
+                <th>M</th>
+                <th>Angle(Degree)</th>
+                <tr>
+                    <td>Up</td>
+                    <td><input type="number" id="n-u" readonly /></td>
+                    <td><input type="number" id="m-u" readonly /></td>
+                    <td><input type="number" id="a-u" readonly />º</td>
+                </tr>
+                <tr>
+                    <td>Left</td>
+                    <td><input type="number" id="n-l" readonly /></td>
+                    <td><input type="number" id="m-l" readonly /></td>
+                    <td><input type="number" id="a-l" readonly />º</td>
+                </tr>
+                <tr>
+                    <td>Down</td>
+                    <td><input type="number" id="n-d" readonly /></td>
+                    <td><input type="number" id="m-d" readonly /></td>
+                    <td><input type="number" id="a-d" readonly />º</td>
+                </tr>
+                <tr>
+                    <td>Right</td>
+                    <td><input type="number" id="n-r" readonly /></td>
+                    <td><input type="number" id="m-r" readonly /></td>
+                    <td><input type="number" id="a-r" readonly />º</td>
+                </tr>
+            </table>
+            <br />
+            Index of case: <input type="number" id="seed" readonly /><br />
+            <details>
+                <summary>Index Calculating Fomula</summary>
+                The index of case for each disk is calculated as
+                <i>N+(M+1)*5</i>,<br />
+                and the comprehensive index is represented as 4-degit 15-base
+                number,<br />
+                which is shown in deciminal above box.<br />
+                The order of digits in the 15-base number is [ULDR].<br />
+                각 디스크의 index of case는 <i>N+(M+1)*5</i>로 계산됩니다.<br />
+                종합 Index는 4자리 15진수 정수로, 각 자리는 [ULDR] 순서의 디스크
+                Index이며<br />
+                위 상자에 10진수로 변환되어 표기됩니다.
+            </details>
+        </div>
+        <hr />
+        <h3>Duplicated Combinations Finder</h3>
+        <table>
+            <tr>
+                <td>Target Combination</td>
+                <td>
+                    <input placeholder="target case" id="searchTarget" />
+                </td>
+            </tr>
+            <tr>
+                <td>Range of Length</td>
+                <td>
+                    <input
+                        type="number"
+                        placeholder="Min"
+                        id="minLength"
+                        class="range-input"
+                        value="0"
+                    />
+                    ~
+                    <input
+                        type="number"
+                        placeholder="Max"
+                        id="maxLength"
+                        class="range-input"
+                        value="11"
+                    />
+                </td>
+            </tr>
+            <tr>
+                <td>Real-Time Mode</td>
+                <td><input type="checkbox" id="realtime" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="center">
+                    <button id="searchBtn">FIND</button>
+                </td>
+            </tr>
+        </table>
+        <br /><br />
+        <div class="result-zone">
+            <input readonly placeholder="INDEX OF CASE" id="targetSeed" /><br />
+            <input
+                readonly
+                placeholder="CURRENT COMBINATION"
+                id="currentComb"
+            /><br /><br />
+            Duplicated Combinations
+            <div class="result-zone" id="result"></div>
+            <br />
+            Took <b><span id="calcTime">?</span></b
+            >ms to calculate
+        </div>
+        <br /><br /><br />
+        <br />
+        This program is based on
+        <a
+            href="https://toool.nl/images/e/e5/The_New_Master_Lock_Combination_Padlock_V2.0.pdf"
+        >
+            Michael Huebler, The New Master Lock® Speed Dial™ / ONE™ Combination
+            Padlock – An Inside View. Version 2.0 (HAR2009 Edition), July 2009
+        </a>
+        <br />
+        You can also check the
+        <a href="https://github.com/hinaple/padlockSim">🍝 code</a> of this
+        program.<br /><br />
+        Copyright 2023. 박따뜻(fainthit@kakao.com) All rights reserved.
+    </body>
+    <script src="app.js" defer></script>
+</html>
